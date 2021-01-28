@@ -51,6 +51,7 @@ case object SyntaxHighlighting extends ExtensionBundle { self =>
       JavaScriptSyntax,
       JavaScriptSyntax.JSX,
       HaskellSyntax,
+      AlloySyntax,
       HTMLSyntax,
       CSSSyntax,
       JSONSyntax,
