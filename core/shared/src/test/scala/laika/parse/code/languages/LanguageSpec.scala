@@ -566,6 +566,51 @@ class LanguageSpec extends AnyWordSpec with Matchers {
         attrName("d e f"), equals, multiline("multiline\n          string"), other("\n}"),
       )
     }
+
+    "parse a Dhall document" in {
+      val input =
+        """# Doc
+          |
+          |```dhall
+          |-- Single-line comment
+          |let multilineText =
+          |  ''
+          |  Multi-line
+          |  text
+          |  ''
+          |let bool = True
+          |let renderedBool : Text = if bool then "True" else "False"
+          |let naturalNumber : Natural = 42
+          |let negativeInteger : Integer = -12
+          |let pi : Double = 3.14159265359
+          |{- Multi-line comment
+          |   continued
+          |-}
+          |let exampleFunction : Natural -> List Natural =
+          |        \(n : Natural) -> [ n, n + 1 ]
+          |in { exampleFunction }
+          |```
+        """.stripMargin
+
+      val nl = other("\n")
+      val let = keyword("let")
+      val colon = other(" : ")
+
+      parse(input) shouldBe result("dhall",
+        comment("-- Single-line comment\n"),
+        let, space, declName("multilineText"), other(" =\n  "),
+        string("''\n  Multi-line\n  text\n  ''"), nl,
+        let, space, declName("bool"), equals, id("True"), nl,
+        let, space, declName("renderedBool"), colon, typeName("Text"), equals, keyword("if"), space, id("bool"), space, keyword("then"), space, string("\"True\""), space, keyword("else"), space, string("\"False\""), nl,
+        let, space, declName("naturalNumber"), colon, typeName("Natural"), equals, number("42"), nl,
+        let, space, declName("negativeInteger"), colon, typeName("Integer"), equals, number("-12"), nl,
+        let, space, declName("pi"), colon, typeName("Double"), equals, number("3.14159265359"), nl,
+        comment("{- Multi-line comment\n   continued\n-}"), nl,
+        let, space, declName("exampleFunction"), colon, typeName("Natural"), other(" -> "), typeName("List"), space, typeName("Natural"), other(" =\n        \\("),
+        id("n"), colon, id("Natural"), other(") -> [ "), id("n"), comma, id("n"), other(" + "), number("1"), other(" ]\n"),
+        keyword("in"), other(" { "), id("exampleFunction"), other(" }")
+      )
+    }
     
     "parse an SQL document" in {
       val input =

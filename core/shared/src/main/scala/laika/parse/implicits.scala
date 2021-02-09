@@ -70,6 +70,14 @@ object implicits {
     def concat: PrefixedParser[Seq[T]] = p.map { case s1 ~ s2 ~ s3 ~ s4 => s1 ++ s2 ++ s3 ++ s4 }
   }
 
+  implicit class Seq5PrefixedParsersOps[T] (val p: PrefixedParser[Seq[T] ~ Seq[T] ~ Seq[T] ~ Seq[T] ~ Seq[T]]) extends AnyVal {
+    def concat: PrefixedParser[Seq[T]] = p.map { case s1 ~ s2 ~ s3 ~ s4 ~ s5 => s1 ++ s2 ++ s3 ++ s4 ++ s5 }
+  }
+
+  implicit class Seq6PrefixedParsersOps[T] (val p: PrefixedParser[Seq[T] ~ Seq[T] ~ Seq[T] ~ Seq[T] ~ Seq[T] ~ Seq[T]]) extends AnyVal {
+    def concat: PrefixedParser[Seq[T]] = p.map { case s1 ~ s2 ~ s3 ~ s4 ~ s5 ~ s6 => s1 ++ s2 ++ s3 ++ s4 ++ s5 ++ s6 }
+  }
+
   implicit class SeqStringParserOps[T] (val p: Parser[Seq[String]]) extends AnyVal {
     def mkLines: Parser[String] = p.map { _.mkString("\n") }
   }
